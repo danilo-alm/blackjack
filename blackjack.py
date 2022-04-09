@@ -165,8 +165,6 @@ CARD_WEIGHTS = [4/52]*4 + [36/52]*9
 # Time computer takes to "think"
 COMPUTER_TIME = 1.5
 
-# Clear console
-system('cls' if name == 'nt' else 'clear')
 print("W E L C O M E  T O  B L A C K J A C K !\n")
 
 # Define players' decks
