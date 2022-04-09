@@ -1,6 +1,5 @@
 import random
 from sys import stdout
-from os import system, name
 from time import sleep
 
 
@@ -139,10 +138,10 @@ def print_cards_and_score(hide_computers_card=False, to_sleep=False) -> None:
 # Clears `num_of_lines` lines from console
 def clear_last_lines(num_of_lines: int) -> None:
     for i in range(num_of_lines):
-        # move cursor back to previous line
+        # Move cursor back to previous line
         stdout.write('\x1b[1A')
 
-        # clear line
+        # Clear line
         stdout.write('\x1b[2K')
 
 
@@ -181,5 +180,5 @@ if __name__ == "__main__":
                 break
             print("--------------------------------------------------")
     except KeyboardInterrupt:
-        print("\nSaindo...")
+        print("\nExiting...")
         exit(1)
