@@ -1,7 +1,7 @@
 import random
 from sys import stdout
 from time import sleep
-
+import os
 
 def play() -> None:
 
@@ -13,19 +13,18 @@ def play() -> None:
 
     computer_wins = player_wins = False
 
-    # Handle cards and compute score
-    print("Handling cards...")
     player_cards, computer_cards = get_cards(2), get_cards(2)
     player_score, computer_score = get_score(player_cards), get_score(computer_cards)
 
-    print_cards_and_score(hide_computers_card=True, to_sleep=True)
+    print_cards_and_score(hide_computers_card=True,
+                          to_sleep=True,
+                          message="Handling cards...")
 
     # Check if blackjack ocurred
     if computer_score == 21: computer_wins = True
     if player_score == 21: player_wins = True
 
     if computer_wins or player_wins:
-        clear_last_lines(3)
         print_cards_and_score()
         print("B L A C K J A C K !")
 
@@ -40,12 +39,9 @@ def play() -> None:
                 # Update score
                 player_score = get_score(player_cards)
 
-                # Clear last cards and scores and print new ones
-                clear_last_lines(4)
                 print_cards_and_score(hide_computers_card=True)
             else:
-                # Clear our question
-                clear_last_lines(1)
+                print_cards_and_score()
                 break
 
         # If player hasn't lost and player's score is higher than computer's
@@ -59,24 +55,15 @@ def play() -> None:
                 computer_cards.append(get_cards(1))
                 computer_score = get_score(computer_cards)
 
-                clear_last_lines(4)
                 print_cards_and_score()
                 print("Computer draws a card...")
 
             sleep(1)
-            clear_last_lines(1)
 
         if (computer_score < player_score <= 21) or (computer_score > 21 and player_score <= 21):
             player_wins = True
         elif (player_score < computer_score <= 21) or (player_score > 21 and computer_score <= 21):
             computer_wins = True
-
-        if len(computer_cards) == 2:
-            # That means the computer hasn't drawn any cards, thus the score on screen wasn't
-            # updated and the user still doesn't know what's the computer's second
-            # card. So, let's clear the last scores/cards and print the new ones
-            clear_last_lines(4)
-            print_cards_and_score()
 
     # Check who has won
     if player_wins == computer_wins:
@@ -113,12 +100,19 @@ def get_score(cards: list) -> int:
     return score
 
 
-# Prints each player's cards and scores
-def print_cards_and_score(hide_computers_card=False, to_sleep=False) -> None:
+# Clears console and prints each player's cards and scores
+def print_cards_and_score(hide_computers_card=False, to_sleep=False, message=None) -> None:
 
     # Setting hide_computers_card to True will only print the first
     # computer's card in the deck and will not take it into account
     # when computing its score
+
+    os.system('cls' if os.name == 'nt' else 'clear')
+    print("W E L C O M E  T O  B L A C K J A C K !\n")
+
+    # Print message, if user passed one to the function
+    if message != None:
+        print(message)
 
     if to_sleep: sleep(1)
 
@@ -133,16 +127,6 @@ def print_cards_and_score(hide_computers_card=False, to_sleep=False) -> None:
 
     print(f"Your cards:       [{', '.join(player_cards)}] -- "
           f"Score: {player_score}\n")
-
-
-# Clears `num_of_lines` lines from console
-def clear_last_lines(num_of_lines: int) -> None:
-    for i in range(num_of_lines):
-        # Move cursor back to previous line
-        stdout.write('\x1b[1A')
-
-        # Clear line
-        stdout.write('\x1b[2K')
 
 
 # Cards and their values
@@ -164,8 +148,6 @@ CARD_WEIGHTS = [4/52]*4 + [36/52]*9
 # Time computer takes to "think"
 COMPUTER_TIME = 1.5
 
-print("W E L C O M E  T O  B L A C K J A C K !\n")
-
 # Define players' decks
 player_cards = computer_cards = []
 player_score = computer_score = 0
@@ -178,7 +160,7 @@ if __name__ == "__main__":
             answer = input("Play again? (Y/n): ").lower()
             if not answer in ["y", "yes", ""]:
                 break
-            print("--------------------------------------------------")
+
     except KeyboardInterrupt:
         print("\nExiting...")
         exit(1)
